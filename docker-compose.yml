@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  torch:
+    network_mode: host
+    env_file: .env
+    tty: true
+    stdin_open: true
+    working_dir: /shared
+
+    build:
+      dockerfile: Dockerfile
+      context: ${PWD}
+
+    # Volumes
+    volumes:
+    - ${PWD}/:/shared
+    - ${LOG_DIR_HOST}:${LOG_DIR_DOCKER}
+    - ${NINAv0}:${DATASETS_PATH}/NINAv0
+  
+    # Used by pytorch workers
+    shm_size: 4gb
+
+    # Allow GPU usage
+    deploy:
+        resources:
+          reservations:
+            devices:
+              - capabilities: [gpu]
